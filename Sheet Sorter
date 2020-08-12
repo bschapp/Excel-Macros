@@ -1,0 +1,58 @@
+Option Explicit
+Sub SortSheets()
+    ' This routine sorts the sheets of the active workbook in ascending order
+    ' Use Ctrl+Shift+S to activate
+    Dim sheetNames() As String
+    Dim i As Long
+    Dim sheetCount As Long
+    Dim OldActiveSheet As Object
+' Avoiding empty workbook errors
+    If Workbook Is Nothing Then Exit Sub
+    sheetCount = ActiveWorkbook.Sheets.Count
+' Check for protected workbook structures
+    If ActiveWorkbook.ProtectStructure Then
+        MsgBox ActiveWorkbook.Name & "is protected", vbCritical, "Cannot Sort Sheets"
+        Exit Sub
+    End If
+' Make user verify
+    If MsgBox("Sort the sheets in the active workbook?", vbQuestion + vbYesNo) <> vbYes Then Exit Sub
+' Disabe Ctrl+Break
+    Application.EnableCancelKey = xlDisabled
+' Determine the number of sheets and ReDim array
+    sheetCount = ActiveWorkbook.Sheets.Count
+    ReDim sheetNames(1 To sheetCount)
+' Store a refrence to the active sheet
+    Set OldActiveSheet = ActiveSheet
+' Fill array with sheet names
+    For i = 1 To sheetCount
+        sheetNames(i) = ActiveWorkbook.Sheets(i).Name
+    Next i
+' Sort the array in ascending order
+    Call BubbleSort(sheetNames)
+' Turn off screen updating
+    Application.ScreenUpdating = False
+'Move the sheets
+    For i = 1 To sheetCount
+        ActiveWorkbook.Sheets(sheetNames(i)).Move Before:=ActiveWorkbook.Sheets(i)
+    Next i
+'Reactiveate the original active sheet
+    OldActiveSheet.Activate
+End Sub
+
+Sub BubbleSort(List() As String)
+    ' Sorts the List array in ascending order
+    Dim first As Long, last As Long
+    Dim i As Long, j As Long
+    Dim temp As String
+    first = LBound(List)
+    last = UBound(List)
+    For i = first To last - 1
+        For j = i + 1 To last
+            If List(i) > List(j) Then
+                temp = List(j)
+                List(j) = List(i)
+                List(i) = temp
+            End If
+        Next j
+    Next i
+End Sub
