@@ -1,0 +1,28 @@
+Sub ThreeColumnSplit()
+    
+    'Selects the cell 2 columns to the right of the selected cell (the data being split)
+    'Reads data to the left of the first space; replaces cell contents with 1st part of data
+    ActiveCell.Offset(0, 2).Select
+    ActiveCell.FormulaR1C1 = "=LEFT(RC[-2],FIND("" "",RC[-2]) -1)"
+    
+    'Moves the active cell to the right
+    'Reads data to the right of the first space
+    'Replaces cell contents with 2nd and 3rd parts of data
+    'Hides the column
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.FormulaR1C1 = "=RIGHT(RC[-3],LEN(RC[-3])-FIND("" "",RC[-3]))"
+    Selection.EntireColumn.Hidden = True
+    
+    'Moves the active cell to the right
+    'Reads data to the left of the space from the cell to the left
+    'Replaces cell contents with 2nd part of data
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.FormulaR1C1 = "=LEFT(RC[-1],FIND("" "",RC[-1]) -1)"
+    
+    'Moves the active cell to the right
+    'Reads data to the right of the space from the cell two cells to the left
+    'Replaces cell contents with 3rd part of data
+    ActiveCell.Offset(0, 1).Select
+    ActiveCell.FormulaR1C1 = "=RIGHT(RC[-2],LEN(RC[-2])-FIND("" "",RC[-2]))"
+    
+End Sub
